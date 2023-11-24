@@ -34,12 +34,33 @@ function markText(selectedText) {
     });
 }
 
+// function createTaggedHtml(taggedData) {
+//     // Transform the tagged data into HTML, color-coding nouns and verbs
+//     return taggedData.map(([word, tag]) => {
+//         const color = tag.startsWith('N') ? 'cyan' : tag.startsWith('V') ? 'green' : 'pink';
+//         return `<span style="background: ${color};">${word}</span>`;
+//     }).join(' ');
+// }
 function createTaggedHtml(taggedData) {
     // Transform the tagged data into HTML, color-coding nouns and verbs
-    return taggedData.map(([word, tag]) => {
-        const color = tag.startsWith('N') ? 'cyan' : tag.startsWith('V') ? 'green' : 'pink';
-        return `<span style="background: ${color};">${word}</span>`;
-    }).join(' ');
+    return taggedData.map(token => {
+        // Process each token, which may contain multiple words
+        const tokenHtml = token.map(([word, tag]) => {
+            const color = 
+                tag.startsWith('N') ? 'aqua' : 
+                tag.startsWith('V') ? 'red' : 
+                tag.startsWith('A') ? 'lime' : 
+                tag.startsWith('C') ? 'yellow' : 
+                tag.startsWith('X') ? 'fuchsia' : 
+                tag.startsWith('P') ? 'orange' : 
+                tag.startsWith('SP') ? 'dodgerblue' : 
+                tag.startsWith('SR') ? 'blueviolet' : 
+                'inherit';
+            return `<span style="background: ${color};">${word}</span>`;
+        }).join('');  // Join words in the same token without space
+
+        return tokenHtml;
+    }).join(' ');  // Join different tokens with space
 }
 
 function replaceSelectedText(replacementHtml) {
