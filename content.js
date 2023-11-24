@@ -1,8 +1,9 @@
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "MARK_TEXT") {
-        // Function to mark the parts of speech in the selected text
         markText(message.text);
+    } else if (message.action === "CLEAR_MARKINGS") {
+        clearMarkings();
     }
 });
 
@@ -34,13 +35,18 @@ function markText(selectedText) {
     });
 }
 
-// function createTaggedHtml(taggedData) {
-//     // Transform the tagged data into HTML, color-coding nouns and verbs
-//     return taggedData.map(([word, tag]) => {
-//         const color = tag.startsWith('N') ? 'cyan' : tag.startsWith('V') ? 'green' : 'pink';
-//         return `<span style="background: ${color};">${word}</span>`;
-//     }).join(' ');
-// }
+function clearMarkings() {
+    // Find all <span> elements added by the extension and revert the changes
+    const markedSpans = document.querySelectorAll('span.added-by-na7w'); // Use a specific class to identify your spans
+    markedSpans.forEach(span => {
+        const parent = span.parentNode;
+        while (span.firstChild) {
+            parent.insertBefore(span.firstChild, span);
+        }
+        parent.removeChild(span);
+    });
+}
+
 function createTaggedHtml(taggedData) {
     // Transform the tagged data into HTML, color-coding nouns and verbs
     return taggedData.map(token => {
@@ -55,8 +61,9 @@ function createTaggedHtml(taggedData) {
                 tag.startsWith('P') ? 'orange' : 
                 tag.startsWith('SP') ? 'dodgerblue' : 
                 tag.startsWith('SR') ? 'blueviolet' : 
+                tag.startsWith('SD') ? 'plum' : 
                 'inherit';
-            return `<span style="background: ${color};">${word}</span>`;
+                return `<span class="added-by-na7w" style="background: ${color};">${word}</span>`;
         }).join('');  // Join words in the same token without space
 
         return tokenHtml;

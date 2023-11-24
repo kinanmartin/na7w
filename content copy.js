@@ -24,7 +24,7 @@ function markText(selectedText) {
     // Define the server URL
     // const serverUrl = `http://localhost:${localhost}/tag`;
     const serverUrl = `http://127.0.0.1:8238/tag`;
-
+    // console.log(selectedText)
     // Send a POST request to the server
     fetch(serverUrl, {
         method: 'POST',

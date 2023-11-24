@@ -1,14 +1,10 @@
 import sys
 sys.dont_write_bytecode = True
 
+from markText import mark_pos
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-# import stanza
-# # Initialize Stanza Arabic pipeline
-# nlp = stanza.Pipeline('ar')
-
-from markText import mark_pos
 
 
 app = Flask(__name__)
@@ -17,6 +13,7 @@ CORS(app)
 @app.route('/tag', methods=['POST'])
 def tag_text():
     data = request.json
+    print(data)
     text = data.get('text')
     
     tagged = mark_pos(text)
