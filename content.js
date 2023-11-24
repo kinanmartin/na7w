@@ -7,87 +7,65 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function markText(selectedText) {
-    // TODO: Implement the logic to send the selected text to your server-side script
-    // and receive the parts of speech tagging.
+    // Define the server URL
+    const serverUrl = 'http://localhost:8238/tag';
 
-    // Example of how you might apply color coding to the text
-    // This is a placeholder; you will replace it with your actual logic.
-    const taggedText = applyDummyTagging(selectedText);
-
-    // Replace the selected text with the color-coded version
-    replaceSelectedText(taggedText);
+    // Send a POST request to the server
+    fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: selectedText })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(taggedData => {
+        // Process the tagged data and apply color coding
+        const taggedHtml = createTaggedHtml(taggedData);
+        replaceSelectedText(taggedHtml);
+    })
+    .catch(error => {
+        console.error('Error while tagging text:', error);
+    });
 }
 
-function applyDummyTagging(text) {
-    // Dummy function for demonstration purposes
-    // Replace this with the actual response from your server-side script
-    return text.split(' ').map(word => `<span style="background: ${getRandomColor()}">${word}</span>`).join(' ');
+function createTaggedHtml(taggedData) {
+    // Transform the tagged data into HTML, color-coding nouns and verbs
+    return taggedData.map(([word, tag]) => {
+        const color = tag.startsWith('N') ? 'cyan' : tag.startsWith('V') ? 'green' : 'pink';
+        return `<span style="background: ${color};">${word}</span>`;
+    }).join(' ');
 }
-
-function getRandomColor() {
-    // Function to generate a random color for demonstration
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-// function replaceSelectedText(replacementHtml) {
-//     // Function to replace the selected text with the color-coded version
-//     // This is a simplified version; you may need more complex logic depending on the page structure
-//     const range = window.getSelection().getRangeAt(0);
-//     const span = document.createElement('span');
-//     span.innerHTML = replacementHtml;
-//     range.deleteContents();
-//     range.insertNode(span);
-// }
 
 function replaceSelectedText(replacementHtml) {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
     const range = selection.getRangeAt(0);
-    const container = document.createElement("div");
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = replacementHtml;
 
-    // Clone the range contents to a temporary container
-    container.appendChild(range.cloneContents());
-
-    // Function to recursively apply the replacement to each text node
-    function applyReplacement(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            // Split the text node into individual words and wrap them in spans
-            const words = node.nodeValue.split(' ').map(word => {
-                const span = document.createElement('span');
-                span.innerHTML = word;
-                span.style.background = getRandomColor(); // Replace with your actual logic
-                return span.outerHTML;
-            }).join(' ');
-            const wrapper = document.createElement('span');
-            wrapper.innerHTML = words;
-            node.parentNode.replaceChild(wrapper, node);
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            Array.from(node.childNodes).forEach(applyReplacement);
-        }
+    // Create a document fragment to hold the nodes
+    const fragment = document.createDocumentFragment();
+    while (tempDiv.firstChild) {
+        // Append nodes to the fragment
+        fragment.appendChild(tempDiv.firstChild);
     }
 
-    Array.from(container.childNodes).forEach(applyReplacement);
-
-    // Replace the original contents of the range with the new container contents
+    // Delete the original contents of the range
     range.deleteContents();
 
-    // Instead of inserting each node, append the whole container
-    const fragment = document.createDocumentFragment();
-    while (container.firstChild) {
-        fragment.appendChild(container.firstChild);
-    }
+    // Insert the fragment (which preserves the order of nodes)
     range.insertNode(fragment);
 
-    // Clear selection
+    // Clear the selection
     selection.removeAllRanges();
     selection.addRange(range);
 }
-
 
 
