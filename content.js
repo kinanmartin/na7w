@@ -1,6 +1,9 @@
+localhost = 8238
+
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "MARK_TEXT") {
+        console.log(message)
         markText(message.text);
     } else if (message.action === "CLEAR_MARKINGS") {
         clearMarkings();
@@ -9,7 +12,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 function markText(selectedText) {
     // Define the server URL
-    const serverUrl = 'http://localhost:8238/tag';
+    const serverUrl = `http://localhost:${localhost}/tag`;
 
     // Send a POST request to the server
     fetch(serverUrl, {
