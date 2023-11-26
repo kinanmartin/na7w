@@ -32,6 +32,8 @@ function markText(selectedText) {
         // Process the tagged data and apply color coding
         const taggedHtml = createTaggedHtml(taggedData);
         replaceSelectedText(taggedHtml);
+        // After marking the text, clear the selection
+        window.getSelection().removeAllRanges();
     })
     .catch(error => {
         console.error('Error while tagging text:', error);

@@ -3,7 +3,7 @@ nlp = stanza.Pipeline('ar')
 
 def mark_pos(text):
     doc = nlp(text)
-    print(doc)
+    # print(doc)
     tagged = []
     for sent in doc.sentences:
         for i, token in enumerate(sent.tokens):
