@@ -8,7 +8,7 @@ def mark_pos(text):
     for sent in doc.sentences:
         for i, token in enumerate(sent.tokens):
             # Special case for li + al = lil
-            if token.words[0].lemma == "لِ" and token.words[1].text[:2] == "ال" and 'Definite=Def' in token.words[1].feats:
+            if len(token.words) < 1 and token.words[0].lemma == "لِ" and token.words[1].text[:2] == "ال" and 'Definite=Def' in token.words[1].feats:
                 # Strip the inital alef
                 token.words[1].text = token.words[1].text[1:]
             # If this token is a multi-word token, there will be multiple "words" in this list
