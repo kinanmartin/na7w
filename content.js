@@ -67,10 +67,10 @@ function createTaggedHtml(taggedData) {
                 tag.startsWith('SD') ? 'plum' : 
                 'inherit';
                 return `<span class="added-by-na7w" style="background: ${color};">${word}</span>`;
-        }).join('');  // Join words in the same token without space
+        }).join('');
 
         return tokenHtml;
-    }).join(' ');  // Join different tokens with space
+    }).join('');
 }
 
 function replaceSelectedText(replacementHtml) {
