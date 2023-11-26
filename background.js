@@ -25,8 +25,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 // Listener for messages from content scripts or popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    // Handle messages as needed
-    // Example: {action: "LOG", payload: "Some message"}
     if (message.action === "LOG") {
         console.log("Received message:", message.payload);
     }
