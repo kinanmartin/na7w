@@ -16,7 +16,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
     logging.info(f"Finished download of {source_blob_name}")
 
 def download_stanza_models():
-    bucket_name = '' # Fill
+    bucket_name = 'na7w-406315.appspot.com'
     prefix = 'stanza_resources/ar/'
     local_folder = '/tmp/stanza_resources/ar'
     os.makedirs(local_folder, exist_ok=True)
