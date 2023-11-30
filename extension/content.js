@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 function markText(selectedText) {
     // Define the server URL
-    const serverUrl = `http://localhost:${localhost}/tag`;
+    const serverUrl = `http://127.0.0.1:${localhost}/tag`;
 
     // Send a POST request to the server
     fetch(serverUrl, {
